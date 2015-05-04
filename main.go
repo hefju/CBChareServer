@@ -3,15 +3,17 @@ import (
     "net/http"
     "github.com/gin-gonic/gin"
   //  "github.com/hefju/CBChareServer/setting"
+    "github.com/hefju/CBChareServer/models"
 // "log"
     "time"
 //  "github.com/hefju/LXServer/tools"
 //  "strconv"
     "log"
-    "os"
+   // "os"
    // "io"
 )
 func main(){
+
 
     //配置初始化
 //    setting.LoadConfig()
@@ -22,18 +24,20 @@ func main(){
 //    }
 //    w:=io.MultiWriter(f,os.Stdout)
 //    log.SetOutput(w)
-    logfile,err:=os.OpenFile("D:/w8/logs/cbserver.log",os.O_RDWR|os.O_CREATE,0)
-    if err!=nil{
-        log.Println("err")
-    }
-   // log.Println(logfile)
-   log.SetOutput(logfile)
+
+//    logfile,err:=os.OpenFile("D:/w8/logs/cbserver.log",os.O_RDWR|os.O_CREATE,0)
+//    if err!=nil{
+//        log.Println("err")
+//    }
+//   log.SetOutput(logfile)
 
     router := gin.Default()
-    router.GET("/", func(c *gin.Context) {
-        log.Println("call index/n")
-        c.String(http.StatusOK, "CBChareServer...")
-    })
+//    router.GET("/", func(c *gin.Context) {
+//        log.Println("call index/n")
+//        c.String(http.StatusOK, "CBChareServer...")
+//    })
+    router.GET("/", GetBill)//测试，获取数据表信息
+
     //获取服务器时间
     router.GET("/time", func(c *gin.Context) {
         c.String(http.StatusOK,time.Now().Format("2006-01-02 15:04:05"))
@@ -45,7 +49,18 @@ func main(){
     router.Run(":8083")
 }
 
+func GetBill(c *gin.Context) {
+    date:=time.Now().AddDate(0,-2,-1)
+    log.Println("getbill date:",date)
+    bill:=  models.GetBilling(date)
+    c.JSON(200,bill)
+}
+
 func uploaddata(c *gin.Context) {
-    log.Println("call upload/n")
-    c.String(http.StatusOK,"from method uploaddata")
+    var json models.Tp_charge_billing
+    c.Bind(&json)
+    count:=  models.InsertBill(json)
+    log.Println("插入结果:",count)
+    //log.Println("call upload/n")
+   // c.String(http.StatusOK,"from method uploaddata")
 }
