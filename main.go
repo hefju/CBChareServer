@@ -44,6 +44,7 @@ func main(){
     })
 
     router.POST("/upload",uploaddata)
+    router.POST("/uploadone",uploaddataone)
 
 
     router.Run(":8083")
@@ -52,15 +53,25 @@ func main(){
 func GetBill(c *gin.Context) {
     date:=time.Now().AddDate(0,-2,-1)
     log.Println("getbill date:",date)
-    bill:=  models.GetBilling(date)
+    bill:=  models.GetChargeListByDate(date)
     c.JSON(200,bill)
 }
 
 func uploaddata(c *gin.Context) {
-    var json models.Tp_charge_billing
+    var json []models.Tp_charge_billing
     c.Bind(&json)
     count:=  models.InsertBill(json)
     log.Println("插入结果:",count)
     //log.Println("call upload/n")
    // c.String(http.StatusOK,"from method uploaddata")
+}
+
+
+func uploaddataone(c *gin.Context) {
+    var json models.Tp_charge_billing
+    c.Bind(&json)
+    count:=  models.InsertBillOne(json)
+    log.Println("uploaddataone插入结果:",count)
+    //log.Println("call upload/n")
+    // c.String(http.StatusOK,"from method uploaddata")
 }

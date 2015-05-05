@@ -12,6 +12,8 @@ var engine *xorm.Engine
 func init(){
 	var err error
 	engine, err = xorm.NewEngine("odbc", "driver={SQL Server};Server=192.168.1.200; Database=charge; uid=sa; pwd=123;")
+	//engine, err = xorm.NewEngine("odbc", "driver={SQL Server};server=.;database=charge;integrated security=SSPI;")
+
 	if err!=nil{
 		log.Fatalln("xorm create error",err)
 	}
@@ -23,24 +25,34 @@ func init(){
 		log.Fatalln("xorm sync error",err)
 	}
 }
-func GetBilling(date time.Time)[]Tp_charge_billing{
-//    date1 := date.Format("2006-01-02 00:00:00")
-//    date = date.AddDate(0, 0, 1)
-//    date2 := date.Format("2006-01-02 00:00:00")
+
+//卧槽,无法输入中文
+func GetChargeListByDate(date time.Time)[]Tp_charge_billing{
+    date1 := date.Format("2006-01-02 00:00:00")
+    date = date.AddDate(0, 0, 1)
+    date2 := date.Format("2006-01-02 00:00:00")
 
     bills := make([]Tp_charge_billing, 0)
-//    err := engine.Find(&everyone)
-//    engine.Where("Crt_date>='?' and Crt_date<'?'",date1,date2).Find(&bills)
-	engine.Limit(0,10).Find(&bills)
-log.Println("bills length:",len(bills))
+//  engine.Where("Crt_date>='?' and Crt_date<'?'",date1,date2).Find(&bills)
+	engine.Where("Crt_date>=? and Crt_date<?",date1,date2).Find(&bills)
+//log.Println("bills length:",len(bills))
     return bills
 }
-func InsertBill(bill Tp_charge_billing)int64{
-    affected, err := engine.Insert(bill)
+
+
+func InsertBill(bills []Tp_charge_billing)int64{
+    affected, err := engine.Insert(bills)
     if err!=nil{
         log.Fatalln("insert bill",err)
     }
     return affected
+}
+func InsertBillOne(bill Tp_charge_billing)int64{
+	affected, err := engine.Insert(bill)
+	if err!=nil{
+		log.Fatalln("insert bill",err)
+	}
+	return affected
 }
 
 
