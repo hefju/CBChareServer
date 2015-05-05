@@ -24,13 +24,14 @@ func init(){
 	}
 }
 func GetBilling(date time.Time)[]Tp_charge_billing{
-    date1 := date.Format("2006-01-02 00:00:00")
-    date = date.AddDate(0, 0, 1)
-    date2 := date.Format("2006-01-02 00:00:00")
+//    date1 := date.Format("2006-01-02 00:00:00")
+//    date = date.AddDate(0, 0, 1)
+//    date2 := date.Format("2006-01-02 00:00:00")
 
     bills := make([]Tp_charge_billing, 0)
 //    err := engine.Find(&everyone)
-    engine.Where("crt_date>='?' and crt_date<'?'",date1,date2).Find(&bills)
+//    engine.Where("Crt_date>='?' and Crt_date<'?'",date1,date2).Find(&bills)
+	engine.Limit(0,10).Find(&bills)
 log.Println("bills length:",len(bills))
     return bills
 }
