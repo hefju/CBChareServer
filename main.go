@@ -11,6 +11,8 @@ import (
     "log"
    // "os"
    // "io"
+    "fmt"
+    "strconv"
 )
 func main(){
 
@@ -70,8 +72,12 @@ func uploaddata(c *gin.Context) {
 func uploaddataone(c *gin.Context) {
     var json models.Tp_charge_billing
     c.Bind(&json)
+    fmt.Println(json)
+
+
     count:=  models.InsertBillOne(json)
     log.Println("uploaddataone插入结果:",count)
+    c.String(http.StatusOK,"insert:"+strconv.FormatInt(count,10))//返回结果, 插入了多少条记录
     //log.Println("call upload/n")
     // c.String(http.StatusOK,"from method uploaddata")
 }

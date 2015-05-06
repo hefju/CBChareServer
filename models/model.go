@@ -48,7 +48,7 @@ func InsertBill(bills []Tp_charge_billing)int64{
     return affected
 }
 func InsertBillOne(bill Tp_charge_billing)int64{
-	affected, err := engine.Insert(bill)
+	affected, err := engine.Omit("Sn").Insert(bill)
 	if err!=nil{
 		log.Fatalln("insert bill",err)
 	}
